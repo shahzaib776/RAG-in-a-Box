@@ -3,16 +3,16 @@
 # Stage 1: Build React frontend
 FROM node:18-alpine as frontend-builder
 
-WORKDIR /app/frontend
+WORKDIR /app
 
 # Copy package files
-COPY frontend/package*.json ./
+COPY package.json ./
 
 # Install dependencies
 RUN npm ci --only=production
 
 # Copy source code
-COPY frontend/ ./
+COPY . ./
 
 # Build the React app
 RUN npm run build
@@ -43,7 +43,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ ./backend/
 
 # Copy built frontend assets
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+COPY --from=frontend-builder /app/dist ./frontend/dist
 
 # Create environment file template
 RUN echo "GOOGLE_API_KEY=your-google-api-key-here" > .env.template
